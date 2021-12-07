@@ -25,12 +25,30 @@ void setup() {
 
 	greenLed.initialize();
 	redLed.initialize();	
-	keypad.initialize();
-
-	redLed.turnOn();
+	keypad.initialize(onCorrectPinEntered, onWrongPinEntered, onNewPinSaved);	
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
 	keypad.update();	 
+}
+
+void onCorrectPinEntered()
+{
+	isLocked = false;
+	greenLed.turnOn();
+	redLed.turnOff();
+}
+
+void onWrongPinEntered()
+{
+	isLocked = true;
+	greenLed.turnOff();
+	redLed.turnOn();
+}
+
+void onNewPinSaved()
+{
+	redLed.turnOff();
+	greenLed.turnOn();
 }
