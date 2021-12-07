@@ -18,6 +18,9 @@ namespace CasinoMortale
 		Bas::Led redLed;
 		Bas::Led greenLed;
 
+		unsigned long lastFeedbackTime;
+		unsigned long currentFeedbackDuration;
+
 	public:
 		Feedback(int redLedPin, int greenLedPin);
 		void initialize();

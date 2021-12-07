@@ -16,6 +16,13 @@ void CasinoMortale::Feedback::initialize()
 
 void CasinoMortale::Feedback::update()
 {
+	if (currentFeedbackDuration > 0 &&
+		millis() - lastFeedbackTime > currentFeedbackDuration)
+	{
+		redLed.turnOff();
+		greenLed.turnOff();
+		currentFeedbackDuration = 0;
+	}
 }
 
 void CasinoMortale::Feedback::playInitializedFeedback()
@@ -33,12 +40,16 @@ void CasinoMortale::Feedback::playUnlockedFeedback()
 {
 	redLed.turnOff();
 	greenLed.turnOn();
+
+	currentFeedbackDuration = 30000;
 }
 
 void CasinoMortale::Feedback::playWrongPinFeedback()
 {
 	redLed.turnOn();
 	greenLed.turnOff();
+
+	currentFeedbackDuration = 5000;
 }
 
 void CasinoMortale::Feedback::playNewPinSetFeedback()
