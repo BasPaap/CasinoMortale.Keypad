@@ -5,17 +5,17 @@
 */
 
 // the setup function runs once when you press reset or power the board
+#include "Feedback.h"
 #include <Adafruit_Keypad_Ringbuffer.h>
 #include <Adafruit_Keypad.h>
 
 #include "Keypad.h"
-#include "Led.h"
+
 
 const int greenLedPin = A0;
 const int redLedPin = A1;
 
-Bas::Led redLed{ redLedPin };
-Bas::Led greenLed{ greenLedPin };
+CasinoMortale::Feedback feedback { redLedPin, greenLedPin };
 CasinoMortale::Keypad keypad;
 
 bool isLocked = true;
@@ -23,32 +23,31 @@ bool isLocked = true;
 void setup() {
 	Serial.begin(9600);
 
-	greenLed.initialize();
-	redLed.initialize();	
+	feedback.initialize();
 	keypad.initialize(onCorrectPinEntered, onWrongPinEntered, onNewPinSaved);	
+
+	feedback.playInitializedFeedback();
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
 	keypad.update();	 
+	feedback.update();
 }
 
 void onCorrectPinEntered()
 {
 	isLocked = false;
-	greenLed.turnOn();
-	redLed.turnOff();
+	feedback.playUnlockedFeedback();
 }
 
 void onWrongPinEntered()
 {
 	isLocked = true;
-	greenLed.turnOff();
-	redLed.turnOn();
+	feedback.playWrongPinFeedback();
 }
 
 void onNewPinSaved()
 {
-	redLed.turnOff();
-	greenLed.turnOn();
+	feedback.playNewPinSetFeedback();
 }

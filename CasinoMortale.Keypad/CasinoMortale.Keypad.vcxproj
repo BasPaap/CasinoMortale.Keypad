@@ -112,10 +112,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Feedback.cpp" />
     <ClCompile Include="Keypad.cpp" />
     <ClCompile Include="Led.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Feedback.h" />
     <ClInclude Include="Keypad.h" />
     <ClInclude Include="Led.h" />
     <ClInclude Include="__vm\.CasinoMortale.Keypad.vsarduino.h" />
