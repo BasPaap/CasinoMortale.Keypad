@@ -1,4 +1,5 @@
 #include "Keypad.h"
+#include <EEPROM.h>
 
 CasinoMortale::Keypad::Keypad()
 {
@@ -11,8 +12,53 @@ void CasinoMortale::Keypad::initialize(CallbackPointer correctPinCodeEnteredCall
 	this->correctPinCodeEnteredCallback = correctPinCodeEnteredCallback;
 	this->wrongPinCodeEnteredCallBack = wrongPinCodeEnteredCallBack;
 	this->newPinCodeSavedCallback = newPinCodeSavedCallback;
+		
+	loadPinCode();
 
 	adafruitKeypad.begin();
+}
+
+void CasinoMortale::Keypad::loadPinCode()
+{
+	byte savedPinCodeLength = EEPROM.read(savedPinCodeLengthAddress);
+
+	if (savedPinCodeLength > maxPinCodeLength)
+	{
+		savedPinCodeLength = maxPinCodeLength;
+	}
+	
+	for (size_t i = 0; i < savedPinCodeLength; i++)
+	{
+		savedPinCode[i] = EEPROM.read(i + 1);
+	}
+
+	savedPinCode[savedPinCodeLength] = '\0';
+
+	Serial.print("Loaded pin code ");
+	Serial.print(savedPinCode);
+	Serial.println(" from memory.");
+}
+
+void CasinoMortale::Keypad::savePinCode(char pinCode[])
+{
+	byte pinCodeLength = strlen(pinCode);
+	if (pinCodeLength > maxPinCodeLength)
+	{
+		pinCodeLength = maxPinCodeLength;
+	}
+
+	EEPROM.write(savedPinCodeLengthAddress, pinCodeLength);
+
+	for (size_t i = 0; i < pinCodeLength; i++)
+	{
+		EEPROM.write(i + 1, pinCode[i]);
+	}
+
+	strcpy(savedPinCode, pinCode);
+
+	Serial.print("Wrote pin code ");
+	Serial.print(savedPinCode);
+	Serial.println(" to memory.");
 }
 
 void CasinoMortale::Keypad::onRequestedNewPinCodeEntry()
@@ -26,7 +72,7 @@ void CasinoMortale::Keypad::onRequestedNewPinCodeEntry()
 void CasinoMortale::Keypad::clearAllInput()
 {
 	memset(currentlyEnteredPinCode, '\0', maxPinCodeLength + 1);	// Completely clear the currently entered pin code.
-	memset(pinCodeToSet, '\0', maxPinCodeLength + 1);	// Completely clear the pin code to set.
+	memset(newPinCode, '\0', maxPinCodeLength + 1);	// Completely clear the pin code to set.
 	isNewPinCodeBeingSet = false;
 }
 
@@ -34,22 +80,24 @@ void CasinoMortale::Keypad::update()
 {
 	adafruitKeypad.tick();
 	
-	if ((strlen(currentlyEnteredPinCode) > 0 || strlen(pinCodeToSet) > 0) &&
+	if ((strlen(currentlyEnteredPinCode) > 0 || strlen(newPinCode) > 0) &&
 		millis() - lastKeyPressTime > keyPressTimeoutDuration)
 	{
 		Serial.println("Keypad timed out, resetting all input.");
 		clearAllInput();
 	}	
 	
-	// If there is a value in pinCodeToSet, check if the pound button is being pressed.
+	// If there is a value in newPinCode, check if the pound button is being pressed.
 	// if so, we need to save the pin code.
 	if (isNewPinCodeBeingSet &&
-		strlen(pinCodeToSet) > 0 &&
+		strlen(newPinCode) > 0 &&
 		adafruitKeypad.justPressed('#'))
 	{
 		Serial.print("Saving new pin code ");
-		Serial.print(pinCodeToSet);
+		Serial.print(newPinCode);
 		Serial.println(" to memory.");		
+
+		savePinCode(newPinCode);
 
 		clearAllInput();
 		this->newPinCodeSavedCallback();		
@@ -86,11 +134,11 @@ void CasinoMortale::Keypad::update()
 		{
 			if (isNewPinCodeBeingSet)
 			{
-				if (strlen(pinCodeToSet) < maxPinCodeLength)
+				if (strlen(newPinCode) < maxPinCodeLength)
 				{
-					pinCodeToSet[strlen(pinCodeToSet)] = pressedNumber;
+					newPinCode[strlen(newPinCode)] = pressedNumber;
 					Serial.print("Currently entered pin code to set: ");
-					Serial.println(pinCodeToSet);
+					Serial.println(newPinCode);
 				}
 			}
 			else
@@ -101,6 +149,22 @@ void CasinoMortale::Keypad::update()
 					Serial.print("Currently entered pin code: ");
 					Serial.println(currentlyEnteredPinCode);
 				}
+			}
+		}
+
+		if (strlen(currentlyEnteredPinCode) == strlen(savedPinCode))
+		{
+			if (strcmp(currentlyEnteredPinCode, savedPinCode) == 0)
+			{
+				Serial.println("Correct pin code entered!");
+				clearAllInput();
+				this->correctPinCodeEnteredCallback();
+			}
+			else
+			{
+				Serial.println("Wrong pin code entered.");
+				clearAllInput();
+				this->wrongPinCodeEnteredCallBack();
 			}
 		}
 

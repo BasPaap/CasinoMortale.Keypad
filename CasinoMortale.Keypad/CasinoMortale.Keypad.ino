@@ -5,6 +5,7 @@
 */
 
 // the setup function runs once when you press reset or power the board
+#include <EEPROM.h>
 #include "Feedback.h"
 #include <Adafruit_Keypad_Ringbuffer.h>
 #include <Adafruit_Keypad.h>
@@ -25,7 +26,7 @@ bool isLocked = true;
 
 void setup() {
 	Serial.begin(9600);
-
+	
 	feedback.initialize();
 	keypad.initialize(onUnlocked, onWrongPinCodeEntered, onNewPinCodeSaved);	
 	requestNewPinCodeButton.initialize(onRequestNewPinCodeButtonPressed);

@@ -37,6 +37,7 @@ namespace CasinoMortale
 		const unsigned long keyPressTimeoutDuration = 5000;
 		static const byte ROWS = 4; // rows
 		static const byte COLS = 3; // columns
+		const int savedPinCodeLengthAddress = 0;
 		//// define the symbols on the buttons of the keypads
 		char keys[ROWS][COLS] = {
 			{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}, {'*', '0', '#'} };
@@ -46,8 +47,9 @@ namespace CasinoMortale
 										   // keypad
 				
 		unsigned long lastKeyPressTime;
+		char savedPinCode[maxPinCodeLength + 1];
 		char currentlyEnteredPinCode[maxPinCodeLength + 1];
-		char pinCodeToSet[maxPinCodeLength + 1];
+		char newPinCode[maxPinCodeLength + 1];
 		Adafruit_Keypad adafruitKeypad = Adafruit_Keypad{ makeKeymap(keys), rowPins, colPins, ROWS, COLS };
 		CallbackPointer correctPinCodeEnteredCallback;
 		CallbackPointer wrongPinCodeEnteredCallBack;
@@ -55,6 +57,8 @@ namespace CasinoMortale
 		bool isNewPinCodeBeingSet;
 
 		void clearAllInput();
+		void loadPinCode();
+		void savePinCode(char pinCode[]);
 
 	public:
 		Keypad();
