@@ -44,7 +44,7 @@ void CasinoMortale::Feedback::playUnlockedFeedback()
 	currentFeedbackDuration = 30000;
 }
 
-void CasinoMortale::Feedback::playWrongPinFeedback()
+void CasinoMortale::Feedback::playWrongPinCodeFeedback()
 {
 	redLed.turnOn();
 	greenLed.turnOff();
@@ -52,7 +52,7 @@ void CasinoMortale::Feedback::playWrongPinFeedback()
 	currentFeedbackDuration = 5000;
 }
 
-void CasinoMortale::Feedback::playNewPinSetFeedback()
+void CasinoMortale::Feedback::playNewPinCodeSetFeedback()
 {
 	greenLed.turnOn();
 	delay(500);

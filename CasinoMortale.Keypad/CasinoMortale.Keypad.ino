@@ -24,7 +24,7 @@ void setup() {
 	Serial.begin(9600);
 
 	feedback.initialize();
-	keypad.initialize(onCorrectPinEntered, onWrongPinEntered, onNewPinSaved);	
+	keypad.initialize(onUnlocked, onWrongPinCodeEntered, onNewPinCodeSaved);	
 
 	feedback.playInitializedFeedback();
 }
@@ -35,19 +35,19 @@ void loop() {
 	feedback.update();
 }
 
-void onCorrectPinEntered()
+void onUnlocked()
 {
 	isLocked = false;
 	feedback.playUnlockedFeedback();
 }
 
-void onWrongPinEntered()
+void onWrongPinCodeEntered()
 {
 	isLocked = true;
-	feedback.playWrongPinFeedback();
+	feedback.playWrongPinCodeFeedback();
 }
 
-void onNewPinSaved()
+void onNewPinCodeSaved()
 {
-	feedback.playNewPinSetFeedback();
+	feedback.playNewPinCodeSetFeedback();
 }
