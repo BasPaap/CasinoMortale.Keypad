@@ -15,6 +15,21 @@ void CasinoMortale::Keypad::initialize(CallbackPointer correctPinCodeEnteredCall
 	adafruitKeypad.begin();
 }
 
+void CasinoMortale::Keypad::onRequestedNewPinCodeEntry()
+{
+	Serial.println("Reading new pin code to set.");
+	clearAllInput();
+	lastKeyPressTime = millis();
+	isNewPinCodeBeingSet = true;
+}
+
+void CasinoMortale::Keypad::clearAllInput()
+{
+	memset(currentlyEnteredPinCode, '\0', maxPinCodeLength + 1);	// Completely clear the currently entered pin code.
+	memset(pinCodeToSet, '\0', maxPinCodeLength + 1);	// Completely clear the pin code to set.
+	isNewPinCodeBeingSet = false;
+}
+
 void CasinoMortale::Keypad::update()
 {
 	adafruitKeypad.tick();
@@ -22,39 +37,22 @@ void CasinoMortale::Keypad::update()
 	if ((strlen(currentlyEnteredPinCode) > 0 || strlen(pinCodeToSet) > 0) &&
 		millis() - lastKeyPressTime > keyPressTimeoutDuration)
 	{
-		Serial.println("Keypad timed out, resetting entered pin code.");
-		memset(currentlyEnteredPinCode, '\0', maxPinCodeLength + 1);	// Completely clear the currently entered pin code.
-		memset(pinCodeToSet, '\0', maxPinCodeLength + 1);	// Completely clear the pin code to set.
-		numSequentialAsteriskKeyPresses = 0;
-	}
-
-	// If the pin code buffers have been cleared, check if the asterisk is being pressed
-	// so that we can determine if we need to be reading a new pin to set.
-	if (strlen(currentlyEnteredPinCode) == 0 &&
-		strlen(pinCodeToSet) == 0 &&
-		adafruitKeypad.justPressed('*'))
-	{
-		numSequentialAsteriskKeyPresses++;
-
-		if (numSequentialAsteriskKeyPresses == numTimesToPressAsteriskKeyToSetNewPinCode)
-		{
-			Serial.println("Reading new pin code to set.");
-		}
-	}
-	
-	bool isNewPinBeingSet = numSequentialAsteriskKeyPresses == numTimesToPressAsteriskKeyToSetNewPinCode;
+		Serial.println("Keypad timed out, resetting all input.");
+		clearAllInput();
+	}	
 	
 	// If there is a value in pinCodeToSet, check if the pound button is being pressed.
 	// if so, we need to save the pin code.
-	if (isNewPinBeingSet &&
+	if (isNewPinCodeBeingSet &&
 		strlen(pinCodeToSet) > 0 &&
 		adafruitKeypad.justPressed('#'))
 	{
-		Serial.print("Saving new pin code");
+		Serial.print("Saving new pin code ");
 		Serial.print(pinCodeToSet);
 		Serial.println(" to memory.");		
 
-		this->newPinCodeSavedCallback();
+		clearAllInput();
+		this->newPinCodeSavedCallback();		
 	}
 
 	if (adafruitKeypad.justPressed('0') ||
@@ -86,7 +84,7 @@ void CasinoMortale::Keypad::update()
 
 		if (pressedNumber != 0)
 		{
-			if (isNewPinBeingSet)
+			if (isNewPinCodeBeingSet)
 			{
 				if (strlen(pinCodeToSet) < maxPinCodeLength)
 				{

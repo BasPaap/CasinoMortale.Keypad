@@ -33,8 +33,7 @@ namespace CasinoMortale
 	class Keypad
 	{
 		using CallbackPointer = void(*)();
-		static const int maxPinCodeLength = 6;
-		static const int numTimesToPressAsteriskKeyToSetNewPinCode = 5;
+		static const int maxPinCodeLength = 6;		
 		const unsigned long keyPressTimeoutDuration = 5000;
 		static const byte ROWS = 4; // rows
 		static const byte COLS = 3; // columns
@@ -50,15 +49,18 @@ namespace CasinoMortale
 		char currentlyEnteredPinCode[maxPinCodeLength + 1];
 		char pinCodeToSet[maxPinCodeLength + 1];
 		Adafruit_Keypad adafruitKeypad = Adafruit_Keypad{ makeKeymap(keys), rowPins, colPins, ROWS, COLS };
-		int numSequentialAsteriskKeyPresses;
 		CallbackPointer correctPinCodeEnteredCallback;
 		CallbackPointer wrongPinCodeEnteredCallBack;
 		CallbackPointer newPinCodeSavedCallback;
+		bool isNewPinCodeBeingSet;
+
+		void clearAllInput();
 
 	public:
 		Keypad();
 		void initialize(CallbackPointer correctPinCodeEnteredCallback, CallbackPointer wrongPinCodeEnteredCallBack, CallbackPointer newPinCodeSavedCallback);
 		void update();
+		void onRequestedNewPinCodeEntry();
 	};
 }
 
