@@ -5,6 +5,7 @@
 */
 
 // the setup function runs once when you press reset or power the board
+#include "Wiring.h"
 #include <EEPROM.h>
 #include "Feedback.h"
 #include <Adafruit_Keypad_Ringbuffer.h>
@@ -12,14 +13,18 @@
 
 #include "Keypad.h"
 #include "Button.h"
+#include "Wiring.h"
 
 const int greenLedPin = A0;
 const int redLedPin = A1;
 const int requestNewPinCodeButtonPin = A4;
 const unsigned long debounceDelay = 50;
+const int dipSwitchPins[] = { A2, A3 };
+const int wirePins[] = { 11, 12, 13 };
 
 CasinoMortale::Feedback feedback { redLedPin, greenLedPin };
 CasinoMortale::Keypad keypad;
+CasinoMortale::Wiring wiring{ dipSwitchPins, wirePins };
 Bas::Button requestNewPinCodeButton { requestNewPinCodeButtonPin, debounceDelay };
 
 bool isLocked = true;
@@ -30,13 +35,16 @@ void setup() {
 	feedback.initialize();
 	keypad.initialize(onUnlocked, onWrongPinCodeEntered, onNewPinCodeSaved);	
 	requestNewPinCodeButton.initialize(onRequestNewPinCodeButtonPressed);
+	wiring.initialize();
 	feedback.playInitializedFeedback();
+	
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
 	requestNewPinCodeButton.update();
 	keypad.update();	 
+	wiring.update();
 	feedback.update();
 }
 
