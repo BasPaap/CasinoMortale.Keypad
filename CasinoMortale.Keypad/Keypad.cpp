@@ -76,6 +76,16 @@ void CasinoMortale::Keypad::clearAllInput()
 	isNewPinCodeBeingSet = false;
 }
 
+void CasinoMortale::Keypad::acceptAlternativePinCode()
+{
+	Serial.print("Keypad set to also accepting alternative pin code of ");
+	Serial.print(alternativePinCode);
+	Serial.println(".");
+
+	clearAllInput();
+	isAcceptingAlternativePinCode = true;
+}
+
 void CasinoMortale::Keypad::update()
 {
 	adafruitKeypad.tick();
@@ -152,11 +162,19 @@ void CasinoMortale::Keypad::update()
 			}
 		}
 
-		if (strlen(currentlyEnteredPinCode) == strlen(savedPinCode))
+		if (strlen(currentlyEnteredPinCode) == strlen(savedPinCode) ||
+			(isAcceptingAlternativePinCode && strlen(currentlyEnteredPinCode) == strlen(alternativePinCode)))
 		{
 			if (strcmp(currentlyEnteredPinCode, savedPinCode) == 0)
 			{
 				Serial.println("Correct pin code entered!");
+				clearAllInput();
+				this->correctPinCodeEnteredCallback();
+			}
+			else if (isAcceptingAlternativePinCode &&
+				strcmp(currentlyEnteredPinCode, alternativePinCode) == 0)
+			{
+				Serial.println("Alternative pin code entered!");
 				clearAllInput();
 				this->correctPinCodeEnteredCallback();
 			}

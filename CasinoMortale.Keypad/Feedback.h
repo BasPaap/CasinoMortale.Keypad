@@ -29,6 +29,7 @@ namespace CasinoMortale
 		void playUnlockedFeedback();
 		void playWrongPinCodeFeedback();
 		void playNewPinCodeSetFeedback();
+		void playOverriddenFeedback();
 	};
 }
 

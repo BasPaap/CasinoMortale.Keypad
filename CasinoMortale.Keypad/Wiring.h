@@ -13,13 +13,21 @@ namespace CasinoMortale
 {
 	class Wiring
 	{
+		static const int numWirePins = 3;
+		using CallbackPointer = void(*)();
 		int dipSwitchPins[2];
-		int wirePins[3];
+		int wirePins[numWirePins];	
+		int requiredPinValue[numWirePins] = { HIGH, HIGH, LOW };
 		int difficultyLevel;
+		CallbackPointer overriddenCallback;
+		CallbackPointer acceptingAlternativePinCodeCallback;
+		bool isSecurityOverRidden;
 		
+		void overrideSecurity();
+
 	public:
 		Wiring(const int dipSwitchPins[2], const int wirePins[3]);
-		void initialize();
+		void initialize(CallbackPointer correctPinCodeEnteredCallback, CallbackPointer acceptingAlternativePinCodeCallback);
 		void update();
 	};
 }

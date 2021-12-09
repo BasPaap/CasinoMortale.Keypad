@@ -20,7 +20,7 @@ const int redLedPin = A1;
 const int requestNewPinCodeButtonPin = A4;
 const unsigned long debounceDelay = 50;
 const int dipSwitchPins[] = { A2, A3 };
-const int wirePins[] = { 11, 12, 13 };
+const int wirePins[] = { 11, 12, A5 };
 
 CasinoMortale::Feedback feedback { redLedPin, greenLedPin };
 CasinoMortale::Keypad keypad;
@@ -35,7 +35,7 @@ void setup() {
 	feedback.initialize();
 	keypad.initialize(onUnlocked, onWrongPinCodeEntered, onNewPinCodeSaved);	
 	requestNewPinCodeButton.initialize(onRequestNewPinCodeButtonPressed);
-	wiring.initialize();
+	wiring.initialize(onSecurityOverridden, onAcceptingAlternativePinCode);
 	feedback.playInitializedFeedback();
 	
 }
@@ -46,6 +46,17 @@ void loop() {
 	keypad.update();	 
 	wiring.update();
 	feedback.update();
+}
+
+void onSecurityOverridden()
+{
+	isLocked = false;
+	feedback.playOverriddenFeedback();
+}
+
+void onAcceptingAlternativePinCode()
+{
+	keypad.acceptAlternativePinCode();
 }
 
 void onUnlocked()

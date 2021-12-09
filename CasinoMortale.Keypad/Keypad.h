@@ -55,6 +55,8 @@ namespace CasinoMortale
 		CallbackPointer wrongPinCodeEnteredCallBack;
 		CallbackPointer newPinCodeSavedCallback;
 		bool isNewPinCodeBeingSet;
+		const char alternativePinCode[5] = "0000";
+		bool isAcceptingAlternativePinCode;
 
 		void clearAllInput();
 		void loadPinCode();
@@ -65,6 +67,7 @@ namespace CasinoMortale
 		void initialize(CallbackPointer correctPinCodeEnteredCallback, CallbackPointer wrongPinCodeEnteredCallBack, CallbackPointer newPinCodeSavedCallback);
 		void update();
 		void onRequestedNewPinCodeEntry();
+		void acceptAlternativePinCode();
 	};
 }
 
