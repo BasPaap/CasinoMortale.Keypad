@@ -116,6 +116,7 @@
     <ClCompile Include="Feedback.cpp" />
     <ClCompile Include="Keypad.cpp" />
     <ClCompile Include="Led.cpp" />
+    <ClCompile Include="Port.cpp" />
     <ClCompile Include="Wiring.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +124,7 @@
     <ClInclude Include="Feedback.h" />
     <ClInclude Include="Keypad.h" />
     <ClInclude Include="Led.h" />
+    <ClInclude Include="Port.h" />
     <ClInclude Include="Wiring.h" />
     <ClInclude Include="__vm\.CasinoMortale.Keypad.vsarduino.h" />
   </ItemGroup>
