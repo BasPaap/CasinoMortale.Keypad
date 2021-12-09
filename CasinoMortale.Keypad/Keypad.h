@@ -32,20 +32,15 @@ namespace CasinoMortale
 {
 	class Keypad
 	{
+		static const int maxPinCodeLength = 6;
 		using CallbackPointer = void(*)();
-		static const int maxPinCodeLength = 6;		
 		const unsigned long keyPressTimeoutDuration = 5000;
 		static const byte ROWS = 4; // rows
 		static const byte COLS = 3; // columns
 		const int savedPinCodeLengthAddress = 0;
-		//// define the symbols on the buttons of the keypads
-		char keys[ROWS][COLS] = {
-			{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}, {'*', '0', '#'} };
-		byte rowPins[ROWS] = { R1, R2, R3,
-							  R4 };         // connect to the row pinouts of the keypad
-		byte colPins[COLS] = { C1, C2, C3 }; // connect to the column pinouts of the
-										   // keypad
-				
+		char keys[ROWS][COLS] = { {'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}, {'*', '0', '#'} }; // define the symbols on the buttons of the keypads
+		byte rowPins[ROWS] = { R1, R2, R3, R4 }; // connect to the row pinouts of the keypad
+		byte colPins[COLS] = { C1, C2, C3 }; // connect to the column pinouts of the keypad				
 		unsigned long lastKeyPressTime;
 		char savedPinCode[maxPinCodeLength + 1];
 		char currentlyEnteredPinCode[maxPinCodeLength + 1];
@@ -68,6 +63,7 @@ namespace CasinoMortale
 		void update();
 		void onRequestedNewPinCodeEntry();
 		void acceptAlternativePinCode();
+		void getSavedPinCode(char* pinCode);
 	};
 }
 

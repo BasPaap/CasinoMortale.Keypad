@@ -6,6 +6,7 @@
 
 // the setup function runs once when you press reset or power the board
 
+#include <SoftwareSerial.h>
 #include <EEPROM.h>
 #include <Adafruit_Keypad_Ringbuffer.h>
 #include <Adafruit_Keypad.h>
@@ -28,7 +29,7 @@ const int portTxPin = 10;
 CasinoMortale::Feedback feedback { redLedPin, greenLedPin };
 CasinoMortale::Keypad keypad;
 CasinoMortale::Wiring wiring{ dipSwitchPins, wirePins };
-CasinoMortale::Port port { portRxPin, portTxPin };
+CasinoMortale::Port port { portRxPin, portTxPin, &keypad };
 Bas::Button requestNewPinCodeButton { requestNewPinCodeButtonPin, debounceDelay };
 
 bool isLocked = true;

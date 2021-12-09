@@ -9,6 +9,9 @@
 	#include "WProgram.h"
 #endif
 
+#include<SoftwareSerial.h>
+#include "Keypad.h"
+
 namespace CasinoMortale
 {
 	class Port
@@ -16,9 +19,11 @@ namespace CasinoMortale
 		int rxPin;
 		int txPin;
 		bool isCommunicating;
+		SoftwareSerial softwareSerial;
+		Keypad *keypad;
 
 	public:
-		Port(int rxPin, int txPin);
+		Port(int rxPin, int txPin, const Keypad *keypad);
 		void initialize();
 		void update();
 	};

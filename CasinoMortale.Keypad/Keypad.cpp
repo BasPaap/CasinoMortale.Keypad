@@ -86,6 +86,11 @@ void CasinoMortale::Keypad::acceptAlternativePinCode()
 	isAcceptingAlternativePinCode = true;
 }
 
+void CasinoMortale::Keypad::getSavedPinCode(char* pinCode)
+{
+	strcpy(pinCode, savedPinCode);
+}
+
 void CasinoMortale::Keypad::update()
 {
 	adafruitKeypad.tick();
