@@ -8,9 +8,10 @@ CasinoMortale::Port::Port(int rxPin, int txPin, const Keypad *keypad) : rxPin{ r
 {	
 }
 
-void CasinoMortale::Port::initialize()
+void CasinoMortale::Port::initialize(CallbackPointer unlockedCallback)
 {
 	Serial.println("Initializing port.");
+	this->unlockedCallback = unlockedCallback;
 	pinMode(txPin, INPUT_PULLUP);
 	softwareSerial = SoftwareSerial(rxPin, txPin);
 }
@@ -21,14 +22,18 @@ void CasinoMortale::Port::update()
 	{
 		Serial.println("Jack connected");
 		isCommunicating = true;				
+		softwareSerial.begin(4800);
+		softwareSerial.flush();
 	}
 	else if (isCommunicating && digitalRead(txPin) == LOW)
 	{
 		Serial.println("Jack removed.");
 		isCommunicating = false;		
+		isUnlockReceived = false;
+		softwareSerial.end();
 	}
 
-	if (isCommunicating)
+	if (!isUnlockReceived && isCommunicating)
 	{	
 		char pinCode[7];
 		keypad->getSavedPinCode(pinCode);
@@ -37,12 +42,21 @@ void CasinoMortale::Port::update()
 		Serial.print(pinCode);
 		Serial.println(" over software serial port.");
 				
-		softwareSerial.begin(4800);
-		softwareSerial.flush();
+
 		softwareSerial.print("*");
 		softwareSerial.print(pinCode);
 		softwareSerial.print("#");
 		softwareSerial.flush();
-		softwareSerial.end();		
+	
+		if (softwareSerial.available())
+		{
+			char readValue = softwareSerial.read();
+			if (readValue == 'U')
+			{
+				Serial.print("Received unlock message on port.");
+				isUnlockReceived = true;
+				this->unlockedCallback();
+			}
+		}
 	}
 }

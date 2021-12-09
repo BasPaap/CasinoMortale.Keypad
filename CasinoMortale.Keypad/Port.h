@@ -16,15 +16,18 @@ namespace CasinoMortale
 {
 	class Port
 	{
+		using CallbackPointer = void(*)();
 		int rxPin;
 		int txPin;
 		bool isCommunicating;
 		SoftwareSerial softwareSerial;
 		Keypad *keypad;
+		bool isUnlockReceived;
+		CallbackPointer unlockedCallback;
 
 	public:
 		Port(int rxPin, int txPin, const Keypad *keypad);
-		void initialize();
+		void initialize(CallbackPointer unlockedCallback);
 		void update();
 	};
 }

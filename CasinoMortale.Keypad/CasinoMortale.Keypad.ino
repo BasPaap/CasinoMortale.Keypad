@@ -41,7 +41,7 @@ void setup() {
 	keypad.initialize(onUnlocked, onWrongPinCodeEntered, onNewPinCodeSaved);	
 	requestNewPinCodeButton.initialize(onRequestNewPinCodeButtonPressed);
 	wiring.initialize(onSecurityOverridden, onAcceptingAlternativePinCode);
-	port.initialize();
+	port.initialize(onUnlocked);
 	feedback.playInitializedFeedback();
 	
 }
