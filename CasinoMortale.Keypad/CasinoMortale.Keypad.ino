@@ -17,8 +17,8 @@
 #include "Wiring.h"
 #include "Port.h"
 
-const int greenLedPin = A0;
-const int redLedPin = A1;
+const int greenLedPin = A1;
+const int redLedPin = A0;
 const int requestNewPinCodeButtonPin = A4;
 const unsigned long debounceDelay = 50;
 const int dipSwitchPins[] = { A2, A3 };
