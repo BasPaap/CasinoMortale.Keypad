@@ -23,10 +23,11 @@ const int requestNewPinCodeButtonPin = A4;
 const unsigned long debounceDelay = 50;
 const int dipSwitchPins[] = { A2, A3 };
 const int wirePins[] = { 11, 12, A5 };
-const int portRxPin = 9;
+const int portRxPin = A7;
 const int portTxPin = 10;
+const int speakerPin = 9;
 
-CasinoMortale::Feedback feedback { redLedPin, greenLedPin };
+CasinoMortale::Feedback feedback { redLedPin, greenLedPin, speakerPin };
 CasinoMortale::Keypad keypad;
 CasinoMortale::Wiring wiring{ dipSwitchPins, wirePins };
 CasinoMortale::Port port { portRxPin, portTxPin, &keypad };

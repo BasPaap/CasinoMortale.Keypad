@@ -124,6 +124,7 @@
     <ClInclude Include="Feedback.h" />
     <ClInclude Include="Keypad.h" />
     <ClInclude Include="Led.h" />
+    <ClInclude Include="Pitches.h" />
     <ClInclude Include="Port.h" />
     <ClInclude Include="Wiring.h" />
     <ClInclude Include="__vm\.CasinoMortale.Keypad.vsarduino.h" />

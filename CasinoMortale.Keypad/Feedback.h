@@ -20,16 +20,19 @@ namespace CasinoMortale
 
 		unsigned long lastFeedbackTime;
 		unsigned long currentFeedbackDuration;
-
+		int speakerPin;
+		void playBondTheme();
+		void playSuccessSound();
+		void playErrorSound();
 	public:
-		Feedback(int redLedPin, int greenLedPin);
+		Feedback(int redLedPin, int greenLedPin, int speakerPin);
 		void initialize();
 		void update();
 		void playInitializedFeedback();
 		void playUnlockedFeedback();
 		void playWrongPinCodeFeedback();
 		void playNewPinCodeSetFeedback();
-		void playOverriddenFeedback();
+		void playOverriddenFeedback();		
 	};
 }
 
