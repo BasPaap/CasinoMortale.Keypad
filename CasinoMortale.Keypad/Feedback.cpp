@@ -74,17 +74,14 @@ void CasinoMortale::Feedback::playOverriddenFeedback()
 		delay(100);
 		greenLed.turnOff();
 		redLed.turnOff();
-		/*delay(100);
-		greenLed.turnOn();
-		redLed.turnOff();
-		delay(100);
-		greenLed.turnOff();*/
 		delay(100);
 	}
 
 	greenLed.turnOn();
-
 	playBondTheme();
+
+	currentFeedbackDuration = 30000;
+	lastFeedbackTime = millis();
 }
 
 void CasinoMortale::Feedback::playNewPinCodeSetFeedback()
@@ -100,111 +97,50 @@ void CasinoMortale::Feedback::playNewPinCodeSetFeedback()
 
 void CasinoMortale::Feedback::playBondTheme()
 {
-	int melody[] = {
-		NOTE_E5, NOTE_G5, 0, NOTE_DS6, NOTE_D6
-	};
+	int bondThemeNotes[] = { NOTE_E5, NOTE_G5, 0, NOTE_DS6, NOTE_D6	};
 
 	// note durations: 4 = quarter note, 8 = eighth note, etc.:
-	int noteDurations[] = {
+	int bondThemeNoteDurations[] = { 4, 8, 16, 8, 2 };
 
-	  4, 8, 16, 8, 2
-	};
-
-	for (int thisNote = 0; thisNote < sizeof(melody) / sizeof(melody[0]); thisNote++) 
-	{
-
-		// to calculate the note duration, take one second divided by the note type.
-
-		//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-
-		int noteDuration = 1000 / noteDurations[thisNote];
-
-		tone(speakerPin, melody[thisNote], noteDuration);
-
-		// to distinguish the notes, set a minimum time between them.
-
-		// the note's duration + 30% seems to work well:
-
-		int pauseBetweenNotes = noteDuration * 1.30;
-
-		delay(pauseBetweenNotes);
-
-		// stop the tone playing:
-
-		noTone(speakerPin);
-	}
+	playNotes(bondThemeNotes, bondThemeNoteDurations, sizeof(bondThemeNotes) / sizeof(bondThemeNotes[0]));	
 }
 
 void CasinoMortale::Feedback::playSuccessSound()
 {
-	int melody[] = {
-		NOTE_E5, NOTE_E6
-	};
+	int successNotes[] = { NOTE_E5, NOTE_E6	};
 
 	// note durations: 4 = quarter note, 8 = eighth note, etc.:
-	int noteDurations[] = {
+	int successNoteDurations[] = { 8, 8	};
 
-	  8, 8
-	};
-
-	for (int thisNote = 0; thisNote < sizeof(melody) / sizeof(melody[0]); thisNote++)
-	{
-
-		// to calculate the note duration, take one second divided by the note type.
-
-		//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-
-		int noteDuration = 1000 / noteDurations[thisNote];
-
-		tone(speakerPin, melody[thisNote], noteDuration);
-
-		// to distinguish the notes, set a minimum time between them.
-
-		// the note's duration + 30% seems to work well:
-
-		int pauseBetweenNotes = noteDuration * 1.30;
-
-		delay(pauseBetweenNotes);
-
-		// stop the tone playing:
-
-		noTone(speakerPin);
-	}
+	playNotes(successNotes, successNoteDurations, sizeof(successNotes) / sizeof(successNotes[0]));
 }
 
 void CasinoMortale::Feedback::playErrorSound()
 {
-	int melody[] = {
-		NOTE_D2
-	};
+	int errorNotes[] = { NOTE_D2 };
 
 	// note durations: 4 = quarter note, 8 = eighth note, etc.:
-	int noteDurations[] = {
+	int errorNoteDurations[] = { 1 };
 
-	  1
-	};
+	playNotes(errorNotes, errorNoteDurations, sizeof(errorNotes) / sizeof(errorNotes[0]));
+}
 
-	for (int thisNote = 0; thisNote < sizeof(melody) / sizeof(melody[0]); thisNote++)
+void CasinoMortale::Feedback::playNotes(int* notes, int* noteDurations, int size)
+{	
+	for (int thisNote = 0; thisNote < size; thisNote++)
 	{
-
 		// to calculate the note duration, take one second divided by the note type.
-
 		//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-
 		int noteDuration = 1000 / noteDurations[thisNote];
 
-		tone(speakerPin, melody[thisNote], noteDuration);
+		tone(speakerPin, notes[thisNote], noteDuration);
 
 		// to distinguish the notes, set a minimum time between them.
-
 		// the note's duration + 30% seems to work well:
-
 		int pauseBetweenNotes = noteDuration * 1.30;
-
 		delay(pauseBetweenNotes);
 
 		// stop the tone playing:
-
 		noTone(speakerPin);
 	}
 }

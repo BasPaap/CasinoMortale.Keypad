@@ -24,6 +24,7 @@ namespace CasinoMortale
 		void playBondTheme();
 		void playSuccessSound();
 		void playErrorSound();
+		void playNotes(int* notes, int* noteDurations, int size);
 	public:
 		Feedback(int redLedPin, int greenLedPin, int speakerPin);
 		void initialize();
