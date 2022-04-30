@@ -4,38 +4,21 @@
 
 #include "Wiring.h"
 
-CasinoMortale::Wiring::Wiring(const int dipSwitchPins[2], const int wirePins[3]) 
+CasinoMortale::Wiring::Wiring(const int wirePins[3]) 
 {
-	for (size_t i = 0; i < sizeof(this->dipSwitchPins) / sizeof(this->dipSwitchPins[0]); i++)
-	{
-		this->dipSwitchPins[i] = dipSwitchPins[i];
-	}
-
 	for (size_t i = 0; i < numWirePins; i++)
 	{
 		this->wirePins[i] = wirePins[i];
 	}
 }
 
-void CasinoMortale::Wiring::initialize(CallbackPointer overriddenCallback, CallbackPointer acceptingAlternativePinCodeCallback)
+void CasinoMortale::Wiring::initialize(CallbackPointer overriddenCallback, CallbackPointer acceptingAlternativePinCodeCallback, int difficultyLevel)
 {
 	Serial.println("Initializing wiring.");
 
 	this->overriddenCallback = overriddenCallback;
 	this->acceptingAlternativePinCodeCallback = acceptingAlternativePinCodeCallback;
-
-	for (size_t i = 0; i < sizeof(dipSwitchPins) / sizeof(dipSwitchPins[0]); i++)
-	{
-		pinMode(dipSwitchPins[i], INPUT_PULLUP);
-		if (digitalRead(dipSwitchPins[i]) == LOW)
-		{
-			difficultyLevel += pow(2, i);
-		}	
-	}
-
-	Serial.print("Difficulty level set to ");
-	Serial.print(difficultyLevel);
-	Serial.println(".");
+	this->difficultyLevel = difficultyLevel;
 
 	for (size_t i = 0; i < numWirePins; i++)
 	{

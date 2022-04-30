@@ -29,22 +29,40 @@ const int speakerPin = 9;
 
 CasinoMortale::Feedback feedback { redLedPin, greenLedPin, speakerPin };
 CasinoMortale::Keypad keypad;
-CasinoMortale::Wiring wiring{ dipSwitchPins, wirePins };
+CasinoMortale::Wiring wiring{ wirePins };
 CasinoMortale::Port port { portRxPin, portTxPin, &keypad };
 Bas::Button requestNewPinCodeButton { requestNewPinCodeButtonPin, debounceDelay };
 
 bool isLocked = true;
+int difficultyLevel = 0;
 
 void setup() {
 	Serial.begin(9600);
 	
+	SetDifficultyLevel();
+
 	feedback.initialize();
 	keypad.initialize(onUnlocked, onWrongPinCodeEntered, onNewPinCodeSaved);	
 	requestNewPinCodeButton.initialize(onRequestNewPinCodeButtonPressed);
-	wiring.initialize(onSecurityOverridden, onAcceptingAlternativePinCode);
-	port.initialize(onUnlocked);
-	feedback.playInitializedFeedback();
-	
+	wiring.initialize(onSecurityOverridden, onAcceptingAlternativePinCode, difficultyLevel);
+	port.initialize(onUnlocked, difficultyLevel);
+	feedback.playInitializedFeedback();	
+}
+
+int SetDifficultyLevel()
+{
+	for (size_t i = 0; i < sizeof(dipSwitchPins) / sizeof(dipSwitchPins[0]); i++)
+	{
+		pinMode(dipSwitchPins[i], INPUT_PULLUP);
+		if (digitalRead(dipSwitchPins[i]) == LOW)
+		{
+			difficultyLevel += pow(2, i);
+		}
+	}
+
+	Serial.print("Difficulty level set to ");
+	Serial.print(difficultyLevel);
+	Serial.println(".");
 }
 
 // the loop function runs over and over again until power down or reset

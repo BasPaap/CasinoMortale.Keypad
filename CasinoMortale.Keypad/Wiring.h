@@ -15,7 +15,6 @@ namespace CasinoMortale
 	{
 		static const int numWirePins = 3;
 		using CallbackPointer = void(*)();
-		int dipSwitchPins[2];
 		int wirePins[numWirePins];	
 		int requiredPinValue[numWirePins] = { HIGH, HIGH, LOW };
 		int difficultyLevel;
@@ -26,8 +25,8 @@ namespace CasinoMortale
 		void overrideSecurity();
 
 	public:
-		Wiring(const int dipSwitchPins[2], const int wirePins[3]);
-		void initialize(CallbackPointer correctPinCodeEnteredCallback, CallbackPointer acceptingAlternativePinCodeCallback);
+		Wiring(const int wirePins[3]);
+		void initialize(CallbackPointer correctPinCodeEnteredCallback, CallbackPointer acceptingAlternativePinCodeCallback, int difficultyLevel);
 		void update();
 	};
 }

@@ -19,6 +19,7 @@ namespace CasinoMortale
 		using CallbackPointer = void(*)();
 		int rxPin;
 		int txPin;
+		int difficultyLevel;
 		bool isCommunicating;
 		SoftwareSerial softwareSerial;
 		Keypad *keypad;
@@ -27,7 +28,7 @@ namespace CasinoMortale
 
 	public:
 		Port(int rxPin, int txPin, const Keypad *keypad);
-		void initialize(CallbackPointer unlockedCallback);
+		void initialize(CallbackPointer unlockedCallback, int difficultyLevel);
 		void update();
 	};
 }
